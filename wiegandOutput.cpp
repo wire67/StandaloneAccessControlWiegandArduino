@@ -21,7 +21,7 @@ WiegandOut::WiegandOut(int data0, int data1, bool enableDebug){
 }
 
 /*Initialize the pins used to transmit wiegand data*/
-void WiegandOut::begin(int data0 , int data1)  
+void WiegandOut::begin(int data0 , int data1)
 {
     pinMode(data0, OUTPUT);					// Set D0 pin as output
 	pinMode(data1, OUTPUT);					// Set D1 pin as output
@@ -53,11 +53,11 @@ void WiegandOut::createParity(unsigned long data, unsigned int bits, bool useFac
     {
 
         tempData = data>>i;
-        if(tempData & 0x01){        //this count the qty of 1 and do a xor to complete the even parity;            
-            _oddParity = _oddParity ^ 1;           
+        if(tempData & 0x01){        //this count the qty of 1 and do a xor to complete the even parity;
+            _oddParity = _oddParity ^ 1;
         }
     }
-    
+
     //34 bits -> use 32 to check parity ((34-2)/2) = 16 even / 16 odd
     //26 bits -> use 24 to check parity ((26-2)/2) = 12 even / 12 odd
     tempData=0;
@@ -65,7 +65,7 @@ void WiegandOut::createParity(unsigned long data, unsigned int bits, bool useFac
     {
         tempData = data>>i;
         if(tempData & 0x01){        //this count the qty of 1 and do a xor to complete the odd parity;
-            _evenParity = _evenParity ^ 1;           
+            _evenParity = _evenParity ^ 1;
         }
     }
 
@@ -118,6 +118,20 @@ void WiegandOut::sendD1(){
 */
 void WiegandOut::send(unsigned long data, unsigned int bits, bool useFacilityCode){
     unsigned long tempData =0;
+
+    if(bits==4){  //send 4 bits data wiegand
+        for (int i = 0; i < (bits); i++)
+            {
+                tempData = data << i;
+                if(tempData & 0x08){
+                    sendD1();
+                }else{
+                    sendD0();
+                }
+            }
+            return;
+    }
+
     if(!useFacilityCode){
         if(bits==34){
             data = data & 0x00FFFFFF; //force facility (first 8 msb as 0) as 0x00
@@ -129,9 +143,9 @@ void WiegandOut::send(unsigned long data, unsigned int bits, bool useFacilityCod
 
     createParity(data,bits,useFacilityCode);
     tempData = data;
-    //send even parity 
+    //send even parity
     if(_evenParity){sendD1();}else{sendD0();}
-    
+
     if(bits==26){  //send 24 bits data wiegand
         for (int i = 0; i < (bits-2); i++)
             {
