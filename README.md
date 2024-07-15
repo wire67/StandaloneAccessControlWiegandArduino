@@ -1,17 +1,17 @@
-# WiegandOutput-Arduino
-
-Wiegand output library for 26 and 34 bits for arduino.
+# Standalone Access Control Wiegand Arduino
 
 # Description
 
-This library allow arduino hardware send a wiegand data using two arduino IO (Data0 and Data1) with 2 types of output - Wiegand 26 bits and Wiegand 34 bits standard.
+Arduino library to remotely configure a Standalone Access Control over its Wiegand input.
+
+It will simulate button presses over Wiegand, as if an admin was manually typing them on the keypad.
+
+Enter programming mode, change master code, add user PIN, delete user pin, change user PIN, and any custom command.
+
 
 # Tested hardwares
 
-Arduino Uno
 ESP32
-ESP8266
-
 
 # How to use
 

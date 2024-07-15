@@ -1,11 +1,11 @@
 {
-    "name": "Wiegand Output",
-    "keywords": "Wiegand Output, Wiegand, RFID Card Reader",
-    "description": "This library allow arduino hardware send a wiegand data using two arduino IO (Data0 and Data1) with 2 types of output - Wiegand 26 bits and Wiegand 34 bits standard.",
+    "name": "Standalone Access Control Wiegand Arduino",
+    "keywords": "Arduino, Wiegand, Standalone Access Control",
+    "description": "Arduino library for cheap Standalone Access Control with Wiegand input can now be controlled.",
     "repository":
     {
       "type": "git",
-      "url": "https://github.com/castrofernando/WiegandOutput-Arduino.git"
+      "url": "https://github.com/wire67/StandaloneAccessControlWiegandArduino.git"
     },
     "authors":
     [
@@ -13,9 +13,12 @@
         "name": "Fernando Carvalho Castro",
         "email": "castro.fernando@me.com",
         "maintainer": true
-      }     
+      },
+      {
+        "name": "WiRe67"
+      }
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "frameworks": "arduino",
     "platforms": "*",
 	"license": "MIT"
