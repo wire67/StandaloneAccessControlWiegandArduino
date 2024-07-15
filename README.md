@@ -1,5 +1,7 @@
 # Standalone Access Control Wiegand Arduino
 
+![Standalone Access Control](https://images.tokopedia.net/img/cache/700/VqbcmM/2023/3/22/a900c778-e943-4c33-a7d1-ccd1fcf67578.jpg)
+
 # Description
 
 Arduino library to remotely configure a Standalone Access Control over its Wiegand input.
