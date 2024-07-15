@@ -175,3 +175,94 @@ void WiegandOut::send(unsigned long data, unsigned int bits, bool useFacilityCod
     }
 
 }
+
+
+void WiegandOut::enterProgrammingMode(const char* masterCode)
+{
+   writeString("*");
+   writeString(masterCode);
+   writeString("#");
+}
+
+void WiegandOut::exitProgrammingMode(void)
+{
+   writeString("*");
+}
+
+void WiegandOut::changeMasterCode(const char* newMasterCode)
+{
+   writeString("0");
+   writeString(newMasterCode);
+   writeString("#");
+   writeString(newMasterCode);
+   writeString("#");
+}
+
+void WiegandOut::addPinUser(const char* userId, const char* userPin)
+{
+   writeString("1");
+   writeString(userId);
+   writeString("#");
+   writeString(userPin);
+   writeString("#");
+}
+
+void WiegandOut::deletePinUser(const char* userId)
+{
+   writeString("2");
+   writeString(userId);
+   writeString("#");
+}
+
+/**
+ * Note: changePinUser will exit programming mode
+ */
+void WiegandOut::changePinUser(const char* userId, const char* oldUserPin, const char* newUserPin)
+{
+   exitProgrammingMode();
+   writeString("*");
+   writeString(userId);
+   writeString("#");
+   writeString(oldUserPin);
+   writeString("#");
+   writeString(newUserPin);
+   writeString("#");
+   writeString(newUserPin);
+   writeString("#");
+}
+
+void WiegandOut::writeArray(const uint8_t* myDigits, const uint8_t length)
+{
+   for(uint8_t i=0;i<length;i++)
+   {
+      send(myDigits[i],4,false);
+      delay(500);
+   }
+}
+
+void WiegandOut::writeString(const char* digitString)
+{
+   for(uint8_t i=0;i<strlen(digitString);i++)
+   {
+      writeChar(digitString[i]);
+      delay(500);
+   }
+}
+
+void WiegandOut::writeChar(const char digitChar)
+{
+   uint8_t myDigit;
+   switch(digitChar)
+   {
+      case '*':
+         myDigit=10;
+         break;
+      case '#':
+         myDigit=11;
+         break;
+      default:
+         myDigit=digitChar-'0';
+         break;
+   }
+   send(myDigit,4,false);
+}
