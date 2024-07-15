@@ -1,21 +1,21 @@
-# WiegandOutput-Arduino
-
-Wiegand output library for 26 and 34 bits for arduino.
+# Standalone Access Control Wiegand Arduino
 
 # Description
 
-This library allow arduino hardware send a wiegand data using two arduino IO (Data0 and Data1) with 2 types of output - Wiegand 26 bits and Wiegand 34 bits standard.
+Arduino library to remotely configure a Standalone Access Control over its Wiegand input.
+
+It will simulate button presses over Wiegand, as if an admin was manually typing them on the keypad.
+
+Enter programming mode, change master code, add user PIN, delete user pin, change user PIN, and any custom command.
+
 
 # Tested hardwares
 
-Arduino Uno
 ESP32
-ESP8266
-
 
 # How to use
 
-1. Include de library wiegandOutput.h
+1. Include de library StandaloneAccessControlWiegandArduino.h
 2. Create a WiegandOut object: WiegandOut wiegandOut(8,9);  -> Wiegand object initialized with Data0 at pin 8 and Data 1 at pin 9
 3. Use the method send to send your card number.
 
@@ -31,17 +31,41 @@ WiegandOut wiegandOut(8,9);
 long count = 0;
 
 void setup() {
+   // enter programming mode (master code 999999)
+   wiegandOut.enterProgrammingMode("999999");
+
+   // change master code (new master code 999999)
+   wiegandOut.changeMasterCode("999999");
+
+   // add a PIN user ID 7 pin 1234
+   wiegandOut.addPinUser("7", "1234");
+
+   // delete a PIN user ID 7
+   wiegandOut.deletePinUser("7");
+
+   /*** custom 1 ***/
+
+   // delete a PIN user ID 7
+   wiegandOut.writeString("27#");
+
+   /*** custom 2 ***/
+
+   // delete a PIN user ID 7
+   const uint8_t arDelUsr[]={2,7,12};
+   wiegandOut.writeArray(arDelUsr,ARRAY_COUNT(arDelUsr));
+
+   /*** custom 3 ***/
+
+   // delete a PIN user ID 7
+   wiegandOut.writeChar('2');
+   delay(500);
+   wiegandOut.writeChar('7');
+   delay(500);
+   wiegandOut.writeChar('#');
+   delay(500);
 }
 
 void loop(){
-wiegandOut.send(count,26,true); // Send 26 bits with facility code
-delay(1000);
-wiegandOut.send(count,34,true);   // Send 34 bits with facility code
-delay(1000);
-wiegandOut.send(count,26,false); // Send 26 bits without facility code
-delay(1000);
-wiegandOut.send(count,34,false); // Send 34 bits without facility code
-delay(1000);
-count++;
+   delay(1000);
 }
 ```

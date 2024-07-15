@@ -6,6 +6,15 @@ class WiegandOut{
     WiegandOut(int data0, int data1, bool enableDebug = false);
     void begin(int pinD0, int pinD1);
     void send(unsigned long data, unsigned int bits, bool useFacilityCode);
+    void enterProgrammingMode(const char* masterCode);
+    void exitProgrammingMode(void);
+    void changeMasterCode(const char* newMasterCode);
+    void addPinUser(const char* userId, const char* userPin);
+    void deletePinUser(const char* userId);
+    void changePinUser(const char* userId, const char* oldUserPin, const char* newUserPin);
+    void writeArray(const uint8_t* myDigits, const uint8_t length);
+    void writeString(const char* digitString);
+    void writeChar(const char digitChar);
 
   private:
     void sendD1();
