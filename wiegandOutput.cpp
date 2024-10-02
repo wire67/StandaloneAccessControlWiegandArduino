@@ -214,6 +214,11 @@ void WiegandOut::deletePinUser(const char* userId)
    writeString("#");
 }
 
+void WiegandOut::deleteAllUsers(void)
+{
+   writeString("20000#");
+}
+
 /**
  * Note: changePinUser will exit programming mode
  */

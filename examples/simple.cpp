@@ -5,13 +5,15 @@
 
 //Initialize at the pin 8 (Data 0) and 9 (Data 1)
 WiegandOut wiegandOut(8,9);
+#define MASTER_CODE  "999999" // default master code 999999
 
-void setup() {
-   // enter programming mode (master code 999999)
-   wiegandOut.enterProgrammingMode("999999");
+void demo1(void)
+{
+   // enter programming mode
+   wiegandOut.enterProgrammingMode(MASTER_CODE);
 
-   // change master code (new master code 999999)
-   wiegandOut.changeMasterCode("999999");
+   // change master code
+   wiegandOut.changeMasterCode(MASTER_CODE);
 
    // add a PIN user ID 7 pin 1234
    wiegandOut.addPinUser("7", "1234");
@@ -41,6 +43,14 @@ void setup() {
    delay(500);
 }
 
-void loop(){
-    delay(1000);
+// -------
+
+void setup() {
+   demo1();
 }
+
+void loop(){
+    delay(10000);
+}
+
+/* EOF */

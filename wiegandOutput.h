@@ -11,6 +11,7 @@ class WiegandOut{
     void changeMasterCode(const char* newMasterCode);
     void addPinUser(const char* userId, const char* userPin);
     void deletePinUser(const char* userId);
+    void deleteAllUsers(void);
     void changePinUser(const char* userId, const char* oldUserPin, const char* newUserPin);
     void writeArray(const uint8_t* myDigits, const uint8_t length);
     void writeString(const char* digitString);
