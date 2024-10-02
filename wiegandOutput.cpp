@@ -23,12 +23,12 @@ WiegandOut::WiegandOut(int data0, int data1, bool enableDebug){
 /*Initialize the pins used to transmit wiegand data*/
 void WiegandOut::begin(int data0 , int data1)
 {
-    pinMode(data0, OUTPUT);					// Set D0 pin as output
-	pinMode(data1, OUTPUT);					// Set D1 pin as output
-    digitalWrite(data0,HIGH);
-    digitalWrite(data1,HIGH);
-    _pinData0 = data0;                      //set as global
-    _pinData1 = data1;                      //set as global
+   pinMode(data0, OUTPUT_OPEN_DRAIN);					// Set D0 pin as output
+   pinMode(data1, OUTPUT_OPEN_DRAIN);					// Set D1 pin as output
+   digitalWrite(data0,HIGH);
+   digitalWrite(data1,HIGH);
+   _pinData0 = data0;                      //set as global
+   _pinData1 = data1;                      //set as global
 }
 
 /*Create wiegand parity*/
