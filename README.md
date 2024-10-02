@@ -4,16 +4,17 @@
 
 # Description
 
-Arduino library to remotely configure a Standalone Access Control over its Wiegand input.
+Arduino library to remotely configure a `Standalone Access Control` over its Wiegand input.
 
 It will simulate button presses over Wiegand, as if an admin was manually typing them on the keypad.
 
 Enter programming mode, change master code, add user PIN, delete user pin, change user PIN, and any custom command.
 
+Main advantage of `Standalone Access Control` is that they are very cheap, they work autonomously and offline. Disavantage is that it needs to be manually configured using the keypad, this is where this library comes in, allowing for remove administration via Wiegand Input.
 
 # Tested hardwares
 
-ESP32
+ESP32 / ESP8266
 
 # How to use
 
