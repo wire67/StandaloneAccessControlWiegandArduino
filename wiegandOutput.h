@@ -15,7 +15,7 @@ class WiegandOut{
     void changePinUser(const char* userId, const char* oldUserPin, const char* newUserPin);
     void writeArray(const uint8_t* myDigits, const uint8_t length);
     void writeString(const char* digitString);
-    void writeChar(const char digitChar);
+    bool writeChar(const char digitChar);
 
   private:
     void sendD1();

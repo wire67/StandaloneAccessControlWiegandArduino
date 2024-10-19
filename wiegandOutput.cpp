@@ -285,12 +285,17 @@ void WiegandOut::writeString(const char *digitString)
 {
    for (uint8_t i = 0; i < strlen(digitString); i++)
    {
-      writeChar(digitString[i]);
-      delay(500);
+      if(writeChar(digitString[i]))
+      {
+         delay(500);
+      }
    }
 }
 
-void WiegandOut::writeChar(const char digitChar)
+/**
+ * @return true if written, false if skipped
+ */
+bool WiegandOut::writeChar(const char digitChar)
 {
    uint8_t myDigit = 0xFF;
    switch (digitChar)
@@ -311,5 +316,7 @@ void WiegandOut::writeChar(const char digitChar)
    if (0xFF != myDigit)
    {
       send(myDigit, 4, false);
+      return true;
    }
+   return false;
 }
