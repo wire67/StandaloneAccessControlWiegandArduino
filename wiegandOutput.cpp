@@ -285,9 +285,26 @@ void WiegandOut::writeString(const char *digitString)
 {
    for (uint8_t i = 0; i < strlen(digitString); i++)
    {
-      if(writeChar(digitString[i]))
+      const char *end = strchr(digitString + i, ']');
+      if ('[' == digitString[i] && end != NULL)
       {
-         delay(500);
+         // Calculate the length of the substring up to ']'
+         size_t length = end - digitString;
+         // Allocate memory for the substring (don't forget space for null-terminator)
+         char substring[length + 1];
+         // Copy the substring
+         strncpy(substring, digitString, length);
+         // Null-terminate the substring
+         substring[length] = '\0';
+         unsigned long value = strtoul(substring, NULL, 10);
+         send(value, 26, false);
+      }
+      else
+      {
+         if (writeChar(digitString[i]))
+         {
+            delay(500);
+         }
       }
    }
 }
@@ -307,7 +324,7 @@ bool WiegandOut::writeChar(const char digitChar)
       myDigit = 11;
       break;
    default:
-      if(digitChar >= '0' && digitChar <= '9')
+      if (digitChar >= '0' && digitChar <= '9')
       {
          myDigit = digitChar - '0';
       }
