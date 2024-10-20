@@ -293,7 +293,7 @@ void WiegandOut::writeString(const char *digitString)
             strncpy(substring, digitString + i + 1, length);
             substring[length] = '\0';
             unsigned long value = strtoul(substring, NULL, 10);
-            send(value, 26, false);
+            send(value, 26, true);
             i += length + 1;
         }
         else
