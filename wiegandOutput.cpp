@@ -281,6 +281,7 @@ void WiegandOut::writeArray(const uint8_t *myDigits, const uint8_t length)
    }
 }
 
+
 void WiegandOut::writeString(const char *digitString)
 {
     for (uint8_t i = 0; i < strlen(digitString); i++)
@@ -294,13 +295,14 @@ void WiegandOut::writeString(const char *digitString)
             substring[length] = '\0';
             unsigned long value = strtoul(substring, NULL, 10);
             send(value, 26, true);
+            delay(500);
             i += length + 1;
         }
         else
         {
             if (writeChar(digitString[i]))
             {
-                delay(500);
+                delay(250);
             }
         }
     }
