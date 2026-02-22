@@ -21,14 +21,15 @@ WiegandOut::WiegandOut(int data0, int data1, bool enableDebug)
 }
 
 /*Initialize the pins used to transmit wiegand data*/
-void WiegandOut::begin(int data0, int data1)
+void WiegandOut::begin(int data0, int data1, int pinOE)
 {
-   pinMode(data0, OUTPUT_OPEN_DRAIN); // Set D0 pin as output
-   pinMode(data1, OUTPUT_OPEN_DRAIN); // Set D1 pin as output
+   pinMode(data0, OUTPUT_OPEN_DRAIN | PULLUP); // Set D0 pin as output
+   pinMode(data1, OUTPUT_OPEN_DRAIN | PULLUP); // Set D1 pin as output
    digitalWrite(data0, HIGH);
    digitalWrite(data1, HIGH);
    _pinData0 = data0; // set as global
    _pinData1 = data1; // set as global
+   _pinOE = pinOE;    // Chip select / Output Enabled pin
 }
 
 /*Create wiegand parity*/
@@ -79,6 +80,11 @@ void WiegandOut::createParity(unsigned long data, unsigned int bits, bool useFac
 /*Send D0 pin pulse*/
 void WiegandOut::sendD0()
 {
+   pinMode(_pinData0, OUTPUT_OPEN_DRAIN | PULLUP);
+   if (_pinOE >= 0)
+   {
+      digitalWrite(_pinOE, LOW); // 0 = B to A
+   }
    digitalWrite(_pinData0, LOW);
 #if (defined(__AVR__))
    _delay_us(DELAY_PULSE_SHORT);
@@ -91,6 +97,10 @@ void WiegandOut::sendD0()
 #elif defined(ESP32) || defined(ESP8266)
    delayMicroseconds(DELAY_PULSE_LONG);
 #endif
+   if (_pinOE >= 0)
+   {
+      digitalWrite(_pinOE, HIGH); // 1 = A to B
+   }
    if (_enableDebug)
    {
       Serial.print("0");
@@ -100,6 +110,11 @@ void WiegandOut::sendD0()
 /*Send D1 pin pulse*/
 void WiegandOut::sendD1()
 {
+   pinMode(_pinData1, OUTPUT_OPEN_DRAIN | PULLUP);
+   if (_pinOE >= 0)
+   {
+      digitalWrite(_pinOE, LOW); // 0 = B to A
+   }
    digitalWrite(_pinData1, LOW);
 #if (defined(__AVR__))
    _delay_us(DELAY_PULSE_SHORT);
@@ -112,6 +127,10 @@ void WiegandOut::sendD1()
 #elif defined(ESP32) || defined(ESP8266)
    delayMicroseconds(DELAY_PULSE_LONG);
 #endif
+   if (_pinOE >= 0)
+   {
+      digitalWrite(_pinOE, HIGH); // 1 = A to B
+   }
    if (_enableDebug)
    {
       Serial.print("1");
@@ -222,7 +241,7 @@ void WiegandOut::enterProgrammingMode(const char *masterCode)
 
 void WiegandOut::exitProgrammingMode(void)
 {
-   writeString("*");
+   writeString("* * * 0000000 ");
 }
 
 void WiegandOut::changeMasterCode(const char *newMasterCode)
@@ -281,31 +300,30 @@ void WiegandOut::writeArray(const uint8_t *myDigits, const uint8_t length)
    }
 }
 
-
 void WiegandOut::writeString(const char *digitString)
 {
-    for (uint8_t i = 0; i < strlen(digitString); i++)
-    {
-        const char *end = strchr(digitString + i, ']');
-        if ('[' == digitString[i] && end != NULL)
-        {
-            size_t length = end - (digitString + i + 1);
-            char substring[length + 1];
-            strncpy(substring, digitString + i + 1, length);
-            substring[length] = '\0';
-            unsigned long value = strtoul(substring, NULL, 10);
-            send(value, 26, true);
-            delay(500);
-            i += length + 1;
-        }
-        else
-        {
-            if (writeChar(digitString[i]))
-            {
-                delay(250);
-            }
-        }
-    }
+   for (uint8_t i = 0; i < strlen(digitString); i++)
+   {
+      const char *end = strchr(digitString + i, ']');
+      if ('[' == digitString[i] && end != NULL)
+      {
+         size_t length = end - (digitString + i + 1);
+         char substring[length + 1];
+         strncpy(substring, digitString + i + 1, length);
+         substring[length] = '\0';
+         unsigned long value = strtoul(substring, NULL, 10);
+         send(value, 26, true);
+         delay(500);
+         i += length + 1;
+      }
+      else
+      {
+         if (writeChar(digitString[i]))
+         {
+            delay(250);
+         }
+      }
+   }
 }
 
 /**
