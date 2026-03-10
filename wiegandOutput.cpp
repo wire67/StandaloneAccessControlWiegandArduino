@@ -21,7 +21,7 @@ WiegandOut::WiegandOut(int data0, int data1, bool enableDebug)
 }
 
 /*Initialize the pins used to transmit wiegand data*/
-void WiegandOut::begin(int data0, int data1, int pinOE)
+void WiegandOut::begin(int data0, int data1, int pinAB)
 {
    pinMode(data0, OUTPUT_OPEN_DRAIN | PULLUP); // Set D0 pin as output
    pinMode(data1, OUTPUT_OPEN_DRAIN | PULLUP); // Set D1 pin as output
@@ -29,7 +29,7 @@ void WiegandOut::begin(int data0, int data1, int pinOE)
    digitalWrite(data1, HIGH);
    _pinData0 = data0; // set as global
    _pinData1 = data1; // set as global
-   _pinOE = pinOE;    // Chip select / Output Enabled pin
+   _pinAB = pinAB;    // Chip select / Output Enabled pin
 }
 
 /*Create wiegand parity*/
@@ -77,64 +77,43 @@ void WiegandOut::createParity(unsigned long data, unsigned int bits, bool useFac
    }
 }
 
-/*Send D0 pin pulse*/
-void WiegandOut::sendD0()
+/*Send Dx pin pulse*/
+void WiegandOut::sendDx(const uint8_t _pinData)
 {
-   pinMode(_pinData0, OUTPUT_OPEN_DRAIN | PULLUP);
-   if (_pinOE >= 0)
+   if (_pinAB >= 0)
    {
-      digitalWrite(_pinOE, LOW); // 0 = B to A
+      digitalWrite(_pinAB, LOW); // 0 = B to A
    }
-   digitalWrite(_pinData0, LOW);
+   pinMode(_pinData, OUTPUT_OPEN_DRAIN | PULLUP);
+   digitalWrite(_pinData, LOW);
 #if (defined(__AVR__))
    _delay_us(DELAY_PULSE_SHORT);
 #elif defined(ESP32) || defined(ESP8266)
    delayMicroseconds(DELAY_PULSE_SHORT);
 #endif
-   digitalWrite(_pinData0, HIGH);
+   digitalWrite(_pinData, HIGH);
+   if (_pinAB >= 0)
+   {
+      digitalWrite(_pinAB, HIGH); // 1 = A to B
+   }
+   pinMode(_pinData, INPUT_PULLUP);
 #if (defined(__AVR__))
    _delay_us(DELAY_PULSE_LONG);
 #elif defined(ESP32) || defined(ESP8266)
    delayMicroseconds(DELAY_PULSE_LONG);
 #endif
-   if (_pinOE >= 0)
-   {
-      digitalWrite(_pinOE, HIGH); // 1 = A to B
-   }
-   if (_enableDebug)
-   {
-      Serial.print("0");
-   }
+}
+
+/*Send D0 pin pulse*/
+void WiegandOut::sendD0()
+{
+   sendDx(_pinData0);
 }
 
 /*Send D1 pin pulse*/
 void WiegandOut::sendD1()
 {
-   pinMode(_pinData1, OUTPUT_OPEN_DRAIN | PULLUP);
-   if (_pinOE >= 0)
-   {
-      digitalWrite(_pinOE, LOW); // 0 = B to A
-   }
-   digitalWrite(_pinData1, LOW);
-#if (defined(__AVR__))
-   _delay_us(DELAY_PULSE_SHORT);
-#elif defined(ESP32) || defined(ESP8266)
-   delayMicroseconds(DELAY_PULSE_SHORT);
-#endif
-   digitalWrite(_pinData1, HIGH);
-#if (defined(__AVR__))
-   _delay_us(DELAY_PULSE_LONG);
-#elif defined(ESP32) || defined(ESP8266)
-   delayMicroseconds(DELAY_PULSE_LONG);
-#endif
-   if (_pinOE >= 0)
-   {
-      digitalWrite(_pinOE, HIGH); // 1 = A to B
-   }
-   if (_enableDebug)
-   {
-      Serial.print("1");
-   }
+   sendDx(_pinData1);
 }
 
 /*Send wiegand data

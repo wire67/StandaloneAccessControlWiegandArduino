@@ -20,10 +20,11 @@ class WiegandOut{
   private:
     void sendD1();
     void sendD0();
+    void sendDx(const uint8_t _pinData);
     void createParity(unsigned long data, unsigned int bits, bool useFacilityCode);
     int _pinData0;
     int _pinData1;
-    int _pinOE;
+    int _pinAB;
     int _evenParity;
     int _oddParity;
     bool _enableDebug;
