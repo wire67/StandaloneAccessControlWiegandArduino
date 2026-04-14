@@ -4,7 +4,7 @@
 class WiegandOut{
   public:
     WiegandOut(int data0, int data1, bool enableDebug = false);
-    void begin(int pinD0, int pinD1, int pinOE=-1);
+    void begin(int pinD0, int pinD1, int pinAB=-1);
     void send(unsigned long data, unsigned int bits, bool useFacilityCode);
     void enterProgrammingMode(const char* masterCode);
     void exitProgrammingMode(void);

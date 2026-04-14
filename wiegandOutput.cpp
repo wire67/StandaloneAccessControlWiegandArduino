@@ -213,44 +213,44 @@ void WiegandOut::send(unsigned long data, unsigned int bits, bool useFacilityCod
 
 void WiegandOut::enterProgrammingMode(const char *masterCode)
 {
-   writeString("*");
+   writeString(" * ");
    writeString(masterCode);
-   writeString("#");
+   writeString(" # ");
 }
 
 void WiegandOut::exitProgrammingMode(void)
 {
-   writeString("* * * 0000000 ");
+   writeString("*** ");
 }
 
 void WiegandOut::changeMasterCode(const char *newMasterCode)
 {
-   writeString("0");
+   writeString(" 0 ");
    writeString(newMasterCode);
-   writeString("#");
+   writeString(" # ");
    writeString(newMasterCode);
-   writeString("#");
+   writeString(" # ");
 }
 
 void WiegandOut::addPinUser(const char *userId, const char *userPin)
 {
-   writeString("1");
+   writeString(" 1 ");
    writeString(userId);
-   writeString("#");
+   writeString(" # ");
    writeString(userPin);
-   writeString("#");
+   writeString(" # ");
 }
 
 void WiegandOut::deletePinUser(const char *userId)
 {
-   writeString("2");
+   writeString(" 2 ");
    writeString(userId);
-   writeString("#");
+   writeString(" # ");
 }
 
 void WiegandOut::deleteAllUsers(void)
 {
-   writeString("20000#");
+   writeString(" 2 0000 # ");
 }
 
 /**
@@ -259,15 +259,15 @@ void WiegandOut::deleteAllUsers(void)
 void WiegandOut::changePinUser(const char *userId, const char *oldUserPin, const char *newUserPin)
 {
    exitProgrammingMode();
-   writeString("*");
+   writeString(" * ");
    writeString(userId);
-   writeString("#");
+   writeString(" # ");
    writeString(oldUserPin);
-   writeString("#");
+   writeString(" # ");
    writeString(newUserPin);
-   writeString("#");
+   writeString(" # ");
    writeString(newUserPin);
-   writeString("#");
+   writeString(" # ");
 }
 
 void WiegandOut::writeArray(const uint8_t *myDigits, const uint8_t length)
@@ -313,6 +313,11 @@ bool WiegandOut::writeChar(const char digitChar)
    uint8_t myDigit = 0xFF;
    switch (digitChar)
    {
+   case ' ':
+   case '\n':
+   case '\r':
+      delay(500);
+      break;
    case '*':
       myDigit = 10;
       break;
